@@ -1,0 +1,115 @@
+{% extends 'account/base.html' %} {% block content %}
+<header class="bg-dark py-5">
+  <div class="container px-4 px-lg-5 my-5">
+    <div class="text-center text-white">
+      <h1 class="display-4 fw-bolder">Your cart</h1>
+      <p class="lead fw-normal text-white-50 mb-0">
+        With this shop hompeage template
+      </p>
+    </div>
+  </div>
+</header>
+<br /><br /><br /><br /><br /><br />
+<div class="container">
+  {% if cart_items %}
+  {% for product in cart_items %}
+  <div class="row justify-content-center">
+    <div class="card mb-3" style="max-width: 540px">
+      <div class="row g-0">
+        <div class="col-md-4">
+          <img
+            src="{{product.image.url}}"
+            class="img-fluid rounded-start"
+            style="height: 200px; width:200px;object-fit: cover;"
+            alt="..."
+          />
+        </div>
+        <div class="col-md-8 text-center">
+          <div class="card-body">
+            <h5 class="card-title">{{product.p_name}}</h5>
+            <p class="card-text">{{product.description}}</p>
+          </div>
+          {% if product.is_sale %}
+          <strike>${{product.price}}</strike>
+          {{product.sale_price}} {% else %} {{product.price}} {% endif %}
+          <br /><br />
+          <div class="row justify-content-center">
+            <div class="col-md-4">quantity</div>
+            <div class="col-3">
+              <select class="form-select-sm" id="select{{product.id}}" >
+                {% for key,value in product_qty.items %}
+                {% if key == product.id|slugify %}
+                <option selected>{{value}}</option>
+                {% endif %} 
+                {% endfor %}
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+              </select>
+            </div>
+          </div>
+          <a href="{% url 'home' %}"><button class="btn btn-secondary">back</button></a>
+          <button type="button" data-index="{{product.id}}" class="btn btn-secondary update_cart">update</button>
+          <button data-index="{{product.id}}" class="btn btn-danger delete_item">remove</button>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="">
+  <h3>Total</h3> 
+  <h5>{{total_amount}}</h5>
+  <h4><a href="{% url 'checkout' %}">checkout</a></h4>
+</div>
+
+  {% else %}
+  <h3 class="text-center">your cart is empty</h3>
+  {% endif %}
+</div>
+<br /><br /><br /><br /><br /><br />
+<br /><br /><br /><br /><br /><br />
+
+<script>
+  $(document).on('click','.update_cart',function(e){
+    e.preventDefault();
+    console.log("from update")
+    var productid = $(this).data('index')
+    $.ajax({
+      type:"POST",
+      url:"{% url 'updatecart' %}",
+      data:{
+        product_id : $(this).data('index') ,
+        product_qty : $('#select' + productid + ' option:selected').text(), 
+        csrfmiddlewaretoken: "{{ csrf_token }}",
+        action:"post",
+      },
+      success:function(json){
+        location.reload()
+      },
+      error:function(){},
+  });
+  });
+
+
+  $(document).on('click','.delete_item',function(e){
+    e.preventDefault;
+    console.log("from delete")
+    var productid = $(this).data('index')
+    $.ajax({
+      type:"POST",
+      url:"{% url 'deleteitem' %}",
+      data:{
+        product_id : $(this).data('index') ,
+        csrfmiddlewaretoken: "{{ csrf_token }}",
+        action:"post",
+      },
+      success:function(json){
+        location.reload()
+      },
+      error:function(){},
+  });
+  });
+</script>
+{% endblock %}

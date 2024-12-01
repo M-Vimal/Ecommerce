@@ -1,0 +1,46 @@
+{% extends 'account/base.html' %} {% block content %}
+<h1>add product</h1>
+<div class="d-flex justify-content-center align-items-center vh-100">
+    <div class="col-md-6 col-lg-4">
+        <form method="POST" action="{% url 'addproduct' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{form.p_name}}
+            {{form.price}}
+            {{form.category}}
+            {{form.description}}
+            {{form.image}}
+            <div>
+                <label for="is_sale">is sale</label>
+
+                {{ form.is_sale }}
+            </div>
+            <div id="saleprice-container" style="display: none;">
+                {{ form.sale_price }}
+            </div>
+
+            <button type="submit">Add product</button>
+        </form>
+    </div>
+</div>
+
+<!-- To show saleprice if issale is cheked -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+    issalecheckbox = document.getElementById('is_sale')  //django provides id for elemnet if id is not given.id is start with prefix 'id_'
+    sale_price= document.getElementById('saleprice-container')
+    console.log(issalecheckbox)
+
+    function toggle_is_sale(){
+        if (issalecheckbox.checked){
+            sale_price.style.display = 'block'
+        }else{
+            sale_price.style.display = 'none'
+        }
+    }
+    toggle_is_sale();
+    issalecheckbox.addEventListener('change',toggle_is_sale)
+    })
+
+
+</script>
+{% endblock %}

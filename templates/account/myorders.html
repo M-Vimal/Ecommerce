@@ -1,0 +1,16 @@
+{% extends 'account/base.html' %} {% block content %}
+<h1 style="text-align: center;">My Orders</h1>
+<div style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 1rem;">
+  {% for order in myorders %}
+  <div class="card" style="width: 18rem;">
+    <div class="card-body">
+      <h5 class="card-title">{{ order.user }}</h5>
+      <h6 class="card-subtitle mb-2 text-body-secondary">{{ order.amount_paid }}</h6>
+      {{ order.shipped }}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+
+ {% endblock %}

@@ -1,0 +1,71 @@
+{% extends 'account/base.html' %} {% block content %}
+<div class="container">
+  <div class="card mb-3" style="max-width: 540px">
+    <div class="row g-0">
+      <div class="col-md-6">
+        <img
+        src="{{product.image.url}}"
+        class="img-fluid rounded-start"
+        alt="..."
+        style="width: 300px; height: 300px; object-fit: cover;"
+        />
+      </div>
+      <div class="col-md-6 text-center">
+        <div class="card-body">
+          <h5 class="card-title">{{product.p_name}}</h5>
+          <p class="card-text">{{product.description}}</p>
+        </div>
+        {% if product.is_sale %}
+        <strike>${{product.price}}</strike>
+        {{product.sale_price}} {% else %} {{product.price}} {% endif %}
+        <br /><br />
+        <div class="row justify-content-center">
+          <div class="col-md-4">quantity</div>
+          <div class="col-3">
+            <select class="form-select-sm" id="qty">
+
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </div>
+        </div>
+        <br><br><br>
+
+        <a href="{% url 'home' %}"
+          ><button class="btn btn-secondary">back</button></a
+        >
+        <button class="btn btn-secondary" id="add-cart" value="{{product.id}}">
+          Add to cart
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  $(document).on("click", "#add-cart", function (e) {
+    e.preventDefault();
+    $.ajax({
+      type: "POST",
+      url: "{% url 'addcart' %}",
+      data: {
+        product_id: $("#add-cart").val(),
+        product_qty:$("#qty option:selected").text(),
+        csrfmiddlewaretoken: "{{ csrf_token }}",
+        action: "post",
+      },
+      success: function (json) {
+        console.log(json)
+        document.getElementById("cart_qty").textContent = json.qty;
+        location.reload()
+      },
+      error: function (xhr, errmsg, err) {},
+    });
+  });
+</script>
+{% endblock %}
+
+

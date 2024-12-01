@@ -1,0 +1,42 @@
+{% extends 'account/base.html' %} {% block content %}
+<h1>all orders</h1>
+{% for order in allorders %}
+<div class="card" style="width: 18rem">
+  <div class="card-body">
+    <h5 class="card-title">{{order.user}}</h5>
+    <h6 class="card-subtitle mb-2 text-body-secondary">{{order.amount}}</h6>
+    <!-- to make order status to shipped -->
+    {% if not order.shipped %}
+    <form method="post" action="{% url 'ordershippedstatus' order.id  %}">
+      {% csrf_token %}
+      <button type="'submit" class="btn btn-success">Mark as Shipped</button>
+    </form>
+    {% endif %}
+    <!-- detail view for particular order -->
+    <a href="{% url 'orderdetails' order.id %}" class="card-link"
+      >view order items</a
+    >
+  </div>
+</div>
+{% endfor %}
+
+<!-- if we click on particular order it shows order items in that particular order -->
+{% if orderdetails %}
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Product</th>
+      <th scope="col">Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for order in orderdetails %}
+    <tr>
+      <td>{{order.product}}</td>
+      <td>{{order.is_shipped}}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endif %} {% endblock %}

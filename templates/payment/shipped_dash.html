@@ -1,0 +1,32 @@
+{% extends 'account/base.html' %}
+{% block content %}
+<h3>shipped items</h3>
+{% if shipped_products %}
+<div class="d-flex justify-content-center" >
+    <table class="table table-bordered" style="width: 50%">
+      <thead class="table-dark">
+        <tr>
+          <th>Order Id</th>
+          <th>Product</th>
+          <th>Price</th>
+          <th>shipping_address</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in shipped_products %}
+        <tr>
+          <td>{{item.order.id}}</td>
+          <td>{{item.product.p_name}}</td>
+          <td>{{item.price}}</td>
+          <td>{{item.order.shipping_address}}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% else %}
+<h1>no shipped proucts</h1>
+{% endif %}
+
+<br><br><br><br>
+{% endblock %}
