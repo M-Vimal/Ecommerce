@@ -4,21 +4,13 @@ class Cart:
     def __init__(self,request):
         self.session = request.session
         self.request = request
-        # Get the current session.key.if it exists
-        cart = self.session.get('session_key')
 
-
-        # If the user is new, no session key!..Create one!
-
-        if 'session_key'  not in request.session:
-            cart = self.session['session_key'] = {}
-        # Make sure cart is available on all pages of site
-
-        self.cart = cart
+        #this will retrive the  session named 'cart'.if there is no 'cart' in session create a an empty sessionkey named 'cart'  . 
+        self.cart = self.session.setdefault('cart', {})
 
     def save(self):
         """Save the cart to the session and mark session as modified."""
-        self.session['session_key'] = self.cart
+        self.session['cart'] = self.cart
         self.session.modified = True 
 
 

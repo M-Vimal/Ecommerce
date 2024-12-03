@@ -118,11 +118,9 @@ def process_order(request):
                 oreder_item.save()
             #delete the session, we create to store cart to empty our cart 
             for key in request.session.keys():
-                print("delete key:",key)
-                if key == "session_key":
+                if key == "cart":
                     del request.session[key]
                     break
-            print("keys",request.session.keys())
             messages.success(request,'order placed')
             return redirect('home')
         else:
@@ -183,11 +181,15 @@ def checkout(request):
         shippingform = ShippingForm(request.POST or None,instance=shipping_user)
         return render(request,'payment/checkout.html',{'cart_items':cart_items,'product_qty':product_quantities,'total_amount':total,'shippingform':shippingform})
     else:
-        messages(request,'please login')
+        messages.success(request,'please login')
         return redirect('login')
 
 
 def payment_success(request):
+    for key in request.session.keys():
+        if key == "cart":
+            del request.session[key]
+            break
     return render(request,'payment/payment_success.html')
 
 def payment_failed(request):
