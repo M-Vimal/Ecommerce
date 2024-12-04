@@ -6,7 +6,11 @@
     <div class="card-body">
       <h5 class="card-title">{{ order.user }}</h5>
       <h6 class="card-subtitle mb-2 text-body-secondary">{{ order.amount_paid }}</h6>
-      {{ order.shipped }}
+      {% if order.shipped %}
+      <p>shipped</p>
+      {% else %}
+      <p>Not shipped</p>
+      {% endif %}
     </div>
   </div>
   {% endfor %}

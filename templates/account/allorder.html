@@ -1,42 +1,62 @@
-{% extends 'account/base.html' %} {% block content %}
-<h1>all orders</h1>
-{% for order in allorders %}
-<div class="card" style="width: 18rem">
-  <div class="card-body">
-    <h5 class="card-title">{{order.user}}</h5>
-    <h6 class="card-subtitle mb-2 text-body-secondary">{{order.amount}}</h6>
-    <!-- to make order status to shipped -->
-    {% if not order.shipped %}
-    <form method="post" action="{% url 'ordershippedstatus' order.id  %}">
-      {% csrf_token %}
-      <button type="'submit" class="btn btn-success">Mark as Shipped</button>
-    </form>
-    {% endif %}
-    <!-- detail view for particular order -->
-    <a href="{% url 'orderdetails' order.id %}" class="card-link"
-      >view order items</a
-    >
-  </div>
-</div>
-{% endfor %}
-
-<!-- if we click on particular order it shows order items in that particular order -->
-{% if orderdetails %}
-<table class="table">
-  <thead>
-    <tr>
-      <th scope="col">Product</th>
-      <th scope="col">Status</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for order in orderdetails %}
-    <tr>
-      <td>{{order.product}}</td>
-      <td>{{order.is_shipped}}</td>
-    </tr>
+{% extends 'account/base.html' %} 
+{% block content %}
+<div class="container my-5">
+  <h1 class="text-center mb-4">All Orders</h1>
+  
+  <div class="row gy-4">
+    {% for order in allorders %}
+    <div class="col-md-4">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">{{ order.user }}</h5>
+          <h6 class="card-subtitle mb-2 text-muted">Amount: {{ order.amount_paid }}</h6>
+          
+          {% if not order.shipped %}
+          <form method="post" action="{% url 'ordershippedstatus' order.id %}" class="mb-3">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-success btn-sm w-100">
+              Mark as Shipped
+            </button>
+          </form>
+          {% endif %}
+          
+          <a href="{% url 'orderdetails' order.id %}" class="btn btn-outline-primary btn-sm w-100">
+            View Order Items
+          </a>
+        </div>
+      </div>
+    </div>
     {% endfor %}
-  </tbody>
-</table>
+  </div>
 
-{% endif %} {% endblock %}
+  {% if orderdetails %}
+  <div class="mt-5">
+    <h2 class="text-center mb-4">Order Details</h2>
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover">
+        <thead class="table-dark">
+          <tr>
+            <th scope="col">Product</th>
+            <th scope="col">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for detail in orderdetails %}
+          <tr>
+            <td>{{ detail.product }}</td>
+            <td>
+              {% if detail.is_shipped %}
+              <span class="badge bg-success">Shipped</span>
+              {% else %}
+              <span class="badge bg-warning text-dark">Pending</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
